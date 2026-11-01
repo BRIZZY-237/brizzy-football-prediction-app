@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 
 void main() {
@@ -12,14 +11,13 @@ class BrizzyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Brizzy Football Prediction',
-      theme: ThemeData(
-        useMaterial3: true,
+      title: 'Brizzy Football',
+      theme: ThemeData.dark().copyWith(
+        scaffoldBackgroundColor: const Color(0xFF101820),
         colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFF087F5B),
+          seedColor: Colors.green,
           brightness: Brightness.dark,
         ),
-        scaffoldBackgroundColor: const Color(0xFF07130F),
       ),
       home: const HomePage(),
     );
@@ -47,129 +45,76 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
-          'BRIZZY FOOTBALL',
+          '⚽ BRIZZY FOOTBALL',
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
-        actions: const [
-          Padding(
-            padding: EdgeInsets.only(right: 16),
-            child: Icon(Icons.sports_soccer, color: Colors.greenAccent),
-          ),
-        ],
+        backgroundColor: const Color(0xFF16232D),
       ),
       body: Column(
         children: [
-          Container(
-            width: double.infinity,
-            margin: const EdgeInsets.all(16),
-            padding: const EdgeInsets.all(18),
-            decoration: BoxDecoration(
-              color: const Color(0xFF103D2C),
-              borderRadius: BorderRadius.circular(18),
-            ),
-            child: const Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'FOOTBALL INSIGHTS',
-                  style: TextStyle(
-                    color: Colors.greenAccent,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                SizedBox(height: 10),
-                Text(
-                  'Analyse matches. Explore predictions.',
-                  style: TextStyle(
-                    fontSize: 21,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                SizedBox(height: 6),
-                Text(
-                  'Statistics-based estimates, not guaranteed results.',
-                ),
-              ],
+          const SizedBox(height: 20),
+          const Text(
+            'Football Prediction Centre',
+            style: TextStyle(
+              fontSize: 23,
+              fontWeight: FontWeight.bold,
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 12),
-            child: Row(
-              children: List.generate(tabs.length, (index) {
-                return Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 3),
-                    child: FilledButton(
-                      onPressed: () {
-                        setState(() => selectedTab = index);
-                      },
-                      style: FilledButton.styleFrom(
-                        backgroundColor: selectedTab == index
-                            ? Colors.green.shade700
-                            : const Color(0xFF182720),
-                      ),
-                      child: Text(
-                        tabs[index],
-                        maxLines: 1,
-                        style: const TextStyle(fontSize: 12),
-                      ),
+          const SizedBox(height: 8),
+          const Text(
+            'Match statistics and analysis',
+            style: TextStyle(color: Colors.white70),
+          ),
+          const SizedBox(height: 20),
+          Row(
+            children: List.generate(tabs.length, (index) {
+              return Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(4),
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: selectedTab == index
+                          ? Colors.green
+                          : Colors.blueGrey,
                     ),
+                    onPressed: () {
+                      setState(() {
+                        selectedTab = index;
+                      });
+                    },
+                    child: Text(tabs[index]),
                   ),
-                );
-              }),
-            ),
+                ),
+              );
+            }),
           ),
-          const SizedBox(height: 12),
           Expanded(
             child: ListView(
               padding: const EdgeInsets.all(16),
               children: [
-                Text(
-                  selectedTab == 0
-                      ? 'GENERAL PREDICTIONS'
-                      : selectedTab == 1
-                          ? 'VIP ANALYSIS'
-                          : 'FIFA / VIRTUAL SCORES',
-                  style: const TextStyle(
-                    color: Colors.greenAccent,
-                    fontSize: 17,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                const SizedBox(height: 12),
-                if (selectedTab == 2)
-                  const MatchCard(
-                    home: 'FIFA Team A',
-                    away: 'FIFA Team B',
-                    score: 'Sample: 2 - 1',
-                    market: 'Correct score',
-                  )
-                else ...[
-                  const MatchCard(
-                    home: 'Home Team',
-                    away: 'Away Team',
-                    score: 'Sample: 2 - 1',
-                    market: 'Correct score estimate',
-                  ),
-                  const MatchCard(
-                    home: 'Home Team',
-                    away: 'Away Team',
-                    score: 'Sample: 1 - 1',
-                    market: '1X2 • Both teams to score',
-                  ),
-                  const MatchCard(
-                    home: 'Home Team',
-                    away: 'Away Team',
-                    score: 'Sample: Over 2.5',
-                    market: 'Goals market estimate',
+                if (selectedTab == 0) ...[
+                  matchCard('General Predictions',
+                      'A selection of match analysis'),
+                  marketCard(),
+                ],
+                if (selectedTab == 1) ...[
+                  matchCard('VIP Analysis',
+                      'Detailed statistical analysis'),
+                  marketCard(),
+                ],
+                if (selectedTab == 2) ...[
+                  matchCard('FIFA Correct Scores',
+                      'Virtual football section'),
+                  const Text(
+                    'FIFA match data will appear here.',
+                    style: TextStyle(fontSize: 16),
                   ),
                 ],
-                const SizedBox(height: 12),
+                const SizedBox(height: 20),
                 const Text(
-                  'Demo only: these are sample entries, not live fixtures '
-                  'or verified predictions. Real match data and a tested '
-                  'prediction model must be connected next.',
-                  style: TextStyle(color: Colors.white60, fontSize: 12),
+                  'Demo content only. Predictions are estimates, '
+                  'not guaranteed results.',
+                  style: TextStyle(color: Colors.orangeAccent),
                 ),
               ],
             ),
@@ -178,51 +123,67 @@ class _HomePageState extends State<HomePage> {
       ),
     );
   }
-}
 
-class MatchCard extends StatelessWidget {
-  final String home;
-  final String away;
-  final String score;
-  final String market;
-
-  const MatchCard({
-    super.key,
-    required this.home,
-    required this.away,
-    required this.score,
-    required this.market,
-  });
-
-  @override
-  Widget build(BuildContext context) {
+  Widget matchCard(String title, String subtitle) {
     return Card(
-      color: const Color(0xFF13251D),
-      margin: const EdgeInsets.only(bottom: 12),
+      color: const Color(0xFF1D303B),
+      child: Padding(
+        padding: const EdgeInsets.all(18),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(title,
+                style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                )),
+            const SizedBox(height: 8),
+            Text(subtitle),
+            const SizedBox(height: 12),
+            const Text('Upcoming match data will appear here.'),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget marketCard() {
+    const markets = [
+      'Correct Score',
+      '1X2 Result',
+      'Both Teams to Score',
+      'Over / Under 1.5',
+      'Over / Under 2.5',
+      'Over / Under 3.5',
+      'Over / Under 4.5',
+      'First-Half Result',
+      'Second-Half Result',
+      'Total Corners',
+    ];
+
+    return Card(
+      color: const Color(0xFF1D303B),
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              '$home  vs  $away',
-              style: const TextStyle(
+            const Text(
+              'Prediction Markets',
+              style: TextStyle(
+                fontSize: 20,
                 fontWeight: FontWeight.bold,
-                fontSize: 16,
               ),
             ),
-            const SizedBox(height: 10),
-            Text(
-              market,
-              style: const TextStyle(color: Colors.white70),
-            ),
-            const SizedBox(height: 6),
-            Text(
-              score,
-              style: const TextStyle(
-                color: Colors.greenAccent,
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
+            const SizedBox(height: 12),
+            ...markets.map(
+              (market) => ListTile(
+                leading: const Icon(
+                  Icons.sports_soccer,
+                  color: Colors.green,
+                ),
+                title: Text(market),
+                trailing: const Icon(Icons.arrow_forward_ios, size: 16),
               ),
             ),
           ],
